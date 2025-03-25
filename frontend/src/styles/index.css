@@ -1,0 +1,157 @@
+/* Diagnostic styles - remove after fixing (ДОБАВИТЬ В САМОЕ НАЧАЛО index.css) */
+* {
+  outline: 1px solid green !important; /* Подсветит ВСЕ элементы зеленой рамкой */
+}
+header {
+  background-color: rgba(255,255,0,0.2) !important; /* Светло-желтая подложка для header */
+}
+/* Diagnostic styles - remove after fixing (ДОБАВИТЬ В САМОЕ НАЧАЛО index.css) */
+* {
+  outline: 1px solid green !important; /* Подсветит ВСЕ элементы *зеленой рамкой* (зеленый цвет менее "навязчивый", чем красный) */
+}
+header {
+  background-color: rgba(255,255,0,0.2) !important; /* Светло-желтая подложка для header (чтобы отличать от основного фона) */
+}
+/* Reset and base styles (ДОБАВЬ ЭТОТ БЛОК В НАЧАЛО index.css) */
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  overflow-x: hidden; /* Предотвращает горизонтальный скролл */
+}
+
+/* (ОСТАЛЬНОЙ CSS КОД index.css ОСТАЕТСЯ *БЕЗ ИЗМЕНЕНИЙ*, НИЖЕ ЭТОГО БЛОКА) */
+body {font-family: sans-serif;margin: 0;}
+header, section, aside, footer {border: 1px solid lightgray;padding: 20px;margin-bottom: 20px;}
+header {background-color: #ffffe0;}
+section {background-color: #f0f0f0;}
+aside {background-color: #e0e0e0;}
+footer {background-color: #f8f8f8;}
+/* ===== HEADER FIX - ПОЛНАЯ ЗАМЕНА СТИЛЕЙ ШАПКИ (ЗАМЕНИТЬ СУЩЕСТВУЮЩИЕ СТИЛИ ШАПКИ В index.css) ===== */
+/* Header specific styles */
+header {
+  width: 100%;
+  position: relative;
+  background-color: #ffffe0;
+  border: 1px solid lightgray;
+  padding: 15px;
+  box-sizing: border-box;
+  overflow: visible !important;
+}
+
+.header-container {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* Логотип */
+.header-logo {
+  align-self: center;
+  margin-bottom: 10px;
+  max-width: 100%;
+}
+
+/* Навигация */
+.header-nav {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 5px; /* Для индикатора прокрутки */
+}
+
+.header-nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 5px;
+  margin: 0;
+  list-style: none;
+}
+
+.header-nav a {
+  display: block;
+  padding: 8px 12px;
+  white-space: nowrap;
+  text-decoration: none;
+  color: #333;
+  background: rgba(255,255,255,0.7);
+  border-radius: 4px;
+  font-size: clamp(14px, 2.5vw, 16px); /* Адаптивный размер текста */
+}
+/* Media queries для адаптивности */
+
+/* Для экранов меньше 768px (планшеты и меньше) */
+@media (max-width: 768px) {
+  .content-wrapper {
+    grid-template-columns: 1fr; /* Перестраиваем в *одну колонку* на планшетах и мобильных!  */
+    padding: 1rem; /* Уменьшаем отступы */
+  }
+
+  .digest-sidebar {
+    display: block; /* *Оставляем дайджест видимым* на планшетах и мобильных (вместо display: none) */
+    width: 100%; /* Дайджест занимает *всю ширину* контейнера (одной колонки) */
+    margin-top: 20px; /* Добавляем отступ сверху от основного контента */
+  }
+
+  .genre-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Уменьшаем минимальную ширину жанровых блоков */
+  }
+
+  .carousel {
+    padding: 10px 0; /* Уменьшаем отступы карусели */
+  }
+  .header-container {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .header-logo {
+    margin-bottom: 0;
+    margin-right: 20px;
+  }
+  .header-nav {
+    width: auto;
+    overflow-x: visible;
+  }
+  .header-nav ul {
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+}
+  
+  /* Для экранов меньше 480px (мобильные телефоны) */
+@media (max-width: 480px) {
+  .content-wrapper {
+    grid-template-columns: 1fr; /* Жанровые блоки в одну колонку на мобильных */
+  }
+
+  .carousel {
+    padding: 5px 0; /* Еще уменьшаем отступы карусели */
+  }
+
+  /* === СТИЛИ ДЛЯ ШАПКИ САЙТА (Header) НА МОБИЛЬНЫХ === */
+  .main-nav ul { /* <--- ОСТАВЛЯЕМ ЭТОТ MEDIA QUERY БЕЗ ИЗМЕНЕНИЙ */
+    gap: 5px;
+  }
+  
+  .main-nav a { /* <--- ОСТАВЛЯЕМ ЭТОТ MEDIA QUERY БЕЗ ИЗМЕНЕНИЙ */
+    padding: 6px 8px;
+    font-size: 14px;
+  }
+
+  .genre-grid {
+    grid-template-columns: 1fr; /* Жанровые блоки в одну колонку на мобильных */
+  }
+
+  .carousel {
+    padding: 5px 0; /* Еще уменьшаем отступы карусели */
+  }
+}
