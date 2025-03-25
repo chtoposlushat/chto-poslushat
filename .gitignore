@@ -1,11 +1,4 @@
-# npm
-node_modules/
-dist/
-
-# Environment
 .env
-.env.local
-
-# Системные
+node_modules/
 .DS_Store
-*.log
+build/

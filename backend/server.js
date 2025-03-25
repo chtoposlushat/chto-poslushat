@@ -1,58 +1,105 @@
 const express = require('express');
 const cors = require('cors');
+const mongoose = require('mongoose');
+require('dotenv').config();
+
+// Импорт моделей
+const Review = require('./models/Review.js');
+const Task = require('./models/Task.js'); // Создайте модель Task если нужно
+
+// Инициализация Express
 const app = express();
 
-// Инициализируем "базу данных" (временное хранилище в памяти)
-let tasks = [
-  { id: 1, text: "Изучить React" },
-  { id: 2, text: "Настроить Express" }
-];
-
 // Middleware
-app.use(cors());
-app.use(express.json()); // Важно! Позволяет читать JSON из запросов
+app.use(cors({
+  origin: [
+    'https://chto-poslushat.vercel.app',
+    'http://localhost:3000' // Для локальной разработки
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE']
+}));
+app.use(express.json());
 
-// GET-запрос (уже есть)
-app.get('/api/tasks', (req, res) => {
-  res.json({ tasks });
+// Подключение к MongoDB
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
+    console.log('MongoDB подключена');
+  } catch (err) {
+    console.error('Ошибка подключения к MongoDB:', err.message);
+    process.exit(1);
+  }
+};
+connectDB();
+
+// Роуты для задач (пример)
+app.route('/api/tasks')
+  .get(async (req, res) => {
+    try {
+      const tasks = await Task.find();
+      res.json(tasks);
+    } catch (err) {
+      res.status(500).json({ error: 'Ошибка сервера' });
+    }
+  })
+  .post(async (req, res) => {
+    if (!req.body.text) {
+      return res.status(400).json({ error: 'Текст обязателен' });
+    }
+
+    try {
+      const newTask = new Task({
+        text: req.body.text.trim()
+      });
+      await newTask.save();
+      res.status(201).json(newTask);
+    } catch (err) {
+      res.status(500).json({ error: 'Ошибка создания задачи' });
+    }
+  });
+
+// Роуты для музыкальных обзоров
+app.route('/api/reviews')
+  .get(async (req, res) => {
+    try {
+      const reviews = await Review.find();
+      res.json(reviews);
+    } catch (err) {
+      res.status(500).json({ error: 'Ошибка загрузки обзоров' });
+    }
+  })
+  .post(async (req, res) => {
+    try {
+      const newReview = new Review({
+        title: req.body.title,
+        artist: req.body.artist,
+        genre: req.body.genre,
+        content: req.body.content,
+        constructiveScore: req.body.constructiveScore
+      });
+      await newReview.save();
+      res.status(201).json(newReview);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  });
+
+// Тестовый роут
+app.get('/api/test', (req, res) => {
+  res.json({ message: "Сервер работает!" });
 });
 
-// 👇 Добавляем новый POST-запрос для создания задач
-app.post('/api/tasks', (req, res) => {
-  // Проверяем наличие текста
-  if (!req.body.text || typeof req.body.text !== 'string') {
-    return res.status(400).json({ 
-      error: 'Текст задачи обязателен и должен быть строкой' 
-    });
-  }
-
-  // Создаем задачу
-  const newTask = {
-    id: Date.now(),
-    text: req.body.text.trim() // Удаляем лишние пробелы
-  };
-  
-  tasks.push(newTask);
-  res.status(201).json(newTask);
+// Обработка 404
+app.use((req, res) => {
+  res.status(404).json({ error: 'Не найдено' });
 });
 
 // Запуск сервера
-app.listen(3000, () => console.log('Сервер запущен на http://localhost:3000'));
-import connectDB from './db.js';
-import Review from './models/Review.js';
-
-// После app.use(cors());
-connectDB();
-
-// Тестовый роут для проверки
-app.get('/api/test-reviews', async (req, res) => {
-  const testReview = new Review({
-    title: "Тестовый обзор",
-    artist: "Группа Пример",
-    genre: "рок",
-    content: "Это пример конструктивного обзора...",
-    constructiveScore: 85
-  });
-  await testReview.save();
-  res.json(testReview);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Сервер запущен на порту ${PORT}`);
+  console.log(`Режим: ${process.env.NODE_ENV || 'development'}`);
 });
